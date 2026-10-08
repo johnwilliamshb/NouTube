@@ -13,6 +13,14 @@ interface NouTubeI {
   setVolumeIndex?: (token: string, index: number) => void
   canAutoResume?: (token: string) => boolean
   setPictureInPictureVideo?: (token: string, width: number, height: number) => void
+  // Added in app 0.7.2; guard before calling so older shells keep working.
+  // They take window.NouTubeToken, which only the main frame is given.
+  // No-ops on shells without Cast support (iOS, foss Android).
+  isCastAvailable?: (token: string) => boolean
+  isCastConnected?: (token: string) => boolean
+  castVideo?: (token: string, videoUrl: string, title: string, positionMs: number) => void
+  showCastPicker?: (token: string) => void
+  stopCasting?: (token: string) => void
 }
 
 declare global {
