@@ -213,6 +213,149 @@ const cssContentMobile = css`
   }
 `
 
+// Hardcoded neon theme for the mobile site (Android app): hides the
+// "Open App" and sign-in prompts, then applies a deep dark gradient with
+// glassmorphism bars, neon accents and a recolored logo.
+const cssContentMobileTheme = css`
+  /* Hide YouTube Mobile "Open App" buttons and top banners. */
+  ytm-mobile-topbar-renderer .header-app-store-button,
+  ytm-open-app-receiver,
+  ytm-app-open-button,
+  c3-icon[type="open_in_app"],
+  a[aria-label*="Open App"],
+  button[aria-label*="Open App"],
+  .open-in-app {
+    display: none !important;
+  }
+
+  /* Hide sign-in prompts; the app is built for use without login. */
+  ytmusic-sign-in-button,
+  ytmusic-nav-bar a[href*="ServiceLogin"],
+  a[aria-label*="Sign in" i],
+  .yt-spec-button-shape-next[aria-label*="Sign in" i] {
+    display: none !important;
+  }
+
+  /* Global deep dark gradient background. */
+  html, body, ytm-app {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e) !important;
+    background-attachment: fixed !important;
+    color: #ffffff !important;
+  }
+
+  /* Glassmorphism top header. */
+  ytm-header-bar {
+    background: rgba(15, 12, 41, 0.65) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  /* Glassmorphism bottom navigation bar. */
+  ytm-pivot-bar-renderer {
+    background: rgba(15, 12, 41, 0.65) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  /* Thumbnail aesthetics. */
+  ytm-rich-item-renderer, ytm-video-with-context-renderer {
+    margin-bottom: 16px !important;
+  }
+
+  .media-item-thumbnail-container {
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4) !important;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease !important;
+  }
+
+  /* Scale down and glow when tapping a video. */
+  .media-item-thumbnail-container:active {
+    transform: scale(0.96) !important;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.5) !important;
+  }
+
+  /* Animated neon video progress bar. */
+  .ytp-play-progress {
+    background: linear-gradient(90deg, #00f2fe, #4facfe) !important;
+    box-shadow: 0 0 10px #00f2fe, 0 0 20px #4facfe !important;
+    animation: neon-pulse 2s infinite alternate !important;
+  }
+
+  /* Progress bar scrubber head glow. */
+  .ytp-scrubber-button {
+    background: #ffffff !important;
+    box-shadow: 0 0 15px #00f2fe !important;
+    border: none !important;
+  }
+
+  @keyframes neon-pulse {
+    0% { filter: brightness(1); }
+    100% { filter: brightness(1.4); }
+  }
+
+  /* Clean up buttons and badges. */
+  ytm-badge {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-radius: 8px !important;
+    backdrop-filter: blur(4px) !important;
+    color: #00f2fe !important;
+  }
+
+  /* Neon edge on the glass header. */
+  ytm-header-bar {
+    border-bottom: 1px solid rgba(0, 242, 254, 0.3) !important;
+    box-shadow: 0 4px 15px rgba(0, 242, 254, 0.15) !important;
+  }
+
+  /* Recolor the YouTube logo: red play button becomes cyan. */
+  ytm-home-logo svg path[fill="#FF0000"],
+  ytm-home-logo svg path[fill="#f00"] {
+    fill: #00f2fe !important;
+    filter: drop-shadow(0 0 6px rgba(0, 242, 254, 0.8)) !important;
+  }
+
+  /* Logo text stark white with a subtle glow. */
+  ytm-home-logo svg path[fill="#212121"],
+  ytm-home-logo svg path[fill="#282828"] {
+    fill: #ffffff !important;
+  }
+
+  /* Top bar action icons: glowing drop shadow and tap animation. */
+  ytm-header-bar yt-icon,
+  ytm-header-bar c3-icon {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.5)) !important;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s ease !important;
+  }
+
+  ytm-header-bar button:active yt-icon,
+  ytm-header-bar button:active c3-icon {
+    transform: scale(0.85) !important;
+    filter: drop-shadow(0 0 12px #00f2fe) !important;
+  }
+
+  /* Search box: pill-shaped with a neon border. */
+  ytm-searchbox .searchbox-input-wrapper {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 20px !important;
+    border: 1px solid rgba(0, 242, 254, 0.4) !important;
+    box-shadow: inset 0 0 8px rgba(0, 242, 254, 0.1) !important;
+  }
+
+  ytm-searchbox input {
+    color: #ffffff !important;
+  }
+
+  ytm-searchbox .searchbox-clear-button yt-icon {
+    fill: #00f2fe !important;
+  }
+`
+
 // Shared by the Android and desktop fullscreen control panels.
 const cssFullscreenPanel = css`
   /*
@@ -589,7 +732,7 @@ export const getCoreCss = () => {
   return (
     (blockAds ? cssContentAds : '') +
     cssContent +
-    (isApp ? cssContentMobile : cssContentDesktop) +
+    (isApp ? cssContentMobile + cssContentMobileTheme : cssContentDesktop) +
     cssFullscreenPanel
   )
 }
