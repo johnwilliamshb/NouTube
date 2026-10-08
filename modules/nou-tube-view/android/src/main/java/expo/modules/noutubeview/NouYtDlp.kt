@@ -90,6 +90,42 @@ internal class NouYtDlp(private val context: Context) {
     }.getOrNull()
   }
 
+  // A direct media URL for the video, for handing to a TV (Google Cast) or any
+  // other external player. Prefers a progressive mp4 at 1080p or below, which
+  // the Cast default receiver plays without transcoding; null when nothing
+  // castable is found. Blocking: call off the main thread.
+  fun resolveStreamUrl(url: String, useCookies: Boolean): String? {
+    ensureYoutubeDLInitialized()
+
+    val cookiesFile = if (useCookies) writeCookiesFile() else null
+    val request = YoutubeDLRequest(url)
+    request.addOption("--dump-json")
+    request.addOption("--no-playlist")
+    request.addOption("-R", "1")
+    request.addOption("--socket-timeout", "5")
+    cookiesFile?.let { request.addOption("--cookies", it.absolutePath) }
+    NouProxy.ytDlpUrl()?.let { request.addOption("--proxy", it) }
+    val response = try {
+      YoutubeDL.getInstance().execute(request)
+    } finally {
+      cookiesFile?.delete()
+    }
+    val json = runCatching { JSONObject(response.out ?: return null) }.getOrNull()
+      ?: return null
+    val formats = (0 until json.optJSONArray("formats")?.length().orZero())
+      .mapNotNull { index -> json.optJSONArray("formats")?.optJSONObject(index) }
+      .filter {
+        it.optString("vcodec") != "none" &&
+          it.optString("acodec") != "none" &&
+          it.optInt("height", 0) in 1..1080
+      }
+    if (formats.isEmpty()) return null
+    val best = formats.filter { it.optString("ext") == "mp4" }
+      .maxByOrNull { it.optInt("height", 0) }
+      ?: formats.maxByOrNull { it.optInt("height", 0) }
+    return best?.optString("url")?.takeIf { it.isNotBlank() }
+  }
+
   fun listFormats(url: String, useCookies: Boolean): Map<String, Any> {
     ensureYoutubeDLInitialized()
 
