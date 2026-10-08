@@ -68,4 +68,7 @@ dependencies {
   implementation 'io.github.junkfood02.youtubedl-android:ffmpeg:0.17.3'
   fullImplementation 'com.google.mlkit:translate:17.0.3'
   fullImplementation 'com.google.mlkit:language-id:17.0.6'
+  // Google Cast is Play-services based, so it only ships in the full flavor;
+  // the foss build gets a no-op NouCast stub instead (see src/foss).
+  fullImplementation 'com.google.android.gms:play-services-cast-framework:21.4.0'
 }
