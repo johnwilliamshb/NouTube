@@ -72,6 +72,43 @@ class NouJsInterface(private val context: Context, private val view: NouTubeView
     view.setPictureInPictureVideo(width, height)
   }
 
+  // Google Cast to a TV. The page renders its own cast button on the video
+  // (see content/cast.ts) and drives it through these. Token-gated like the
+  // setters above: only the main frame may start or stop a cast session.
+  // Added in app 0.7.2; the page guards before calling so older shells keep
+  // working. No-op on shells without Cast support (iOS, foss Android).
+  @JavascriptInterface
+  fun isCastAvailable(token: String?): Boolean =
+    if (view.isBridgeTokenValid(token)) view.isCastAvailable() else false
+
+  @JavascriptInterface
+  fun isCastConnected(token: String?): Boolean =
+    if (view.isBridgeTokenValid(token)) view.isCastConnected() else false
+
+  @JavascriptInterface
+  fun castVideo(token: String?, videoUrl: String, title: String, positionMs: Long) {
+    if (!view.isBridgeTokenValid(token)) {
+      return
+    }
+    view.castVideo(videoUrl, title, positionMs)
+  }
+
+  @JavascriptInterface
+  fun showCastPicker(token: String?) {
+    if (!view.isBridgeTokenValid(token)) {
+      return
+    }
+    view.showCastPicker()
+  }
+
+  @JavascriptInterface
+  fun stopCasting(token: String?) {
+    if (!view.isBridgeTokenValid(token)) {
+      return
+    }
+    view.stopCasting()
+  }
+
   // Completes an awaited eval (see NouTubeView.evalAwait). Token-gated like the setters above:
   // without it any frame could answer — or hijack — a pending eval.
   @JavascriptInterface
