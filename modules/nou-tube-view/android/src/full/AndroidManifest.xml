@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- Full flavor only: registers the Cast options provider so the Cast SDK
+       can discover receivers. The foss flavor has no Play services and no
+       cast support, so this metadata must not merge into it. -->
+  <application>
+    <meta-data
+      android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+      android:value="expo.modules.noutubeview.NouCastOptionsProvider" />
+  </application>
+</manifest>
