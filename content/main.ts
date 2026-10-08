@@ -18,6 +18,7 @@ import { installSystemCaptionStyle } from './captions'
 import { installEncodedAuthorNameFix } from './author-names'
 import { guardMediaSessionHandlers, installBackgroundGuard } from './background-guard'
 import { installSplitView, navigateWatch, setMuted, setNativeMini } from './split-view'
+import { installCastButton } from './cast'
 
 try {
   if ((window as any).NouTubePreferH264) {
@@ -96,6 +97,7 @@ async function initObserver() {
   installEncodedAuthorNameFix()
   if (window.isAndroid) {
     installBackgroundGuard()
+    installCastButton()
   }
 
   pinchToZoom()

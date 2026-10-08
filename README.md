@@ -35,6 +35,7 @@ Or use the browser extension on Firefox and Chrome.
 - Hide shorts
 - Live chat
 - Play original audio
+- Cast videos to a TV (Chromecast / Google TV, Android only)
 - Customize with CSS
 
 ## How it works
