@@ -1006,11 +1006,28 @@ class NouTubeView(context: Context, appContext: AppContext) : ExpoView(context, 
     syncMediaSession()
   }
 
+  // Google Cast to a TV (full flavor only; the foss stub always reports
+  // unavailable). Driven from the page's cast button via NouJsInterface.
+  private val nouCast = NouCast(this)
+
+  internal fun isCastAvailable(): Boolean = nouCast.isAvailable()
+
+  internal fun isCastConnected(): Boolean = nouCast.isConnected()
+
+  internal fun castVideo(videoUrl: String, title: String, positionMs: Long) {
+    nouCast.castVideo(videoUrl, title, positionMs)
+  }
+
+  internal fun showCastPicker() = nouCast.showDevicePicker()
+
+  internal fun stopCasting() = nouCast.stopCasting()
+
   // Bound through the application context, so nothing releases the binding on
   // its own: without this the service — and the activity and WebView it holds
   // — outlives the view, even after exit() called stopSelf(). Driven by
   // OnViewDestroys in NouTubeViewModule.
   fun destroyService() {
+    nouCast.destroy()
     stopWindowTracking()
     fullscreenOrientation.exit()
     if (::orientationListener.isInitialized) orientationListener.disable()
